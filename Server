@@ -1,0 +1,40 @@
+shinyServer(function(input, output) {
+  
+  df_country <- reactive({
+    adult %>% filter(native_country == input$country)
+  })
+  
+  output$p1 <- renderPlot({
+    if (input$graph_type == "histogram") {
+      ggplot(df_country(), aes_string(x = input$continuous_variable)) +
+        geom_histogram() +  
+        labs(y = "Number of People", title = paste("Trend of ", input$continuous_variable)) +  
+        facet_wrap(~prediction) 
+    }
+    else {
+      ggplot(df_country(), aes_string(y = input$continuous_variable)) +
+        geom_boxplot() + 
+        coord_flip() +  
+        labs(title = paste("Trend of ", input$continuous_variable)) +  
+        facet_wrap(~prediction)   
+    }
+    
+  })
+  
+  output$p2 <- renderPlot({
+    
+    p <- ggplot(df_country(), aes_string(x = input$categorical_variable)) +
+      labs(y = "Number of People",title = paste("Trend of ", input$categorical_variable)) +  
+      theme(axis.text.x = element_text(angle = 45), legend.position = "bottom")    
+    
+    if (input$is_stacked == TRUE) {
+      p + geom_bar(fill = "prediction")  
+    }
+    else{
+      p + 
+        geom_bar(fill = input$categorical_variable) + 
+        facet_wrap(~prediction)   
+    }
+  })
+  
+})
