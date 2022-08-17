@@ -1,0 +1,50 @@
+shinyUI(
+  fluidPage(
+    br(),
+    
+    titlePanel(title = "Trends in Demographics and Income"),
+    p("Explore the difference between people who earn less than 50K and more than 50K. You can filter the data by country, then explore various demogrphic information."),
+    
+    fluidRow(
+      column(12, 
+             wellPanel(
+               selectInput(inputId = "country",
+                           label = "Country of Origin",
+                           choices = c("United-States","Canada","Mexico","Germany", "Philippines"), 
+                           selected = "United-States")) 
+      )),
+    
+    fluidRow(
+      column(3, 
+             wellPanel(
+               p("Select a continuous variable and graph type (histogram or boxplot) to view on the right."),
+               radioButtons(inputId = "graph_type",
+                            label = "Graph Type",
+                            choices = c("histogram", "boxplot"),
+                            selected = "histogram"),             
+               radioButtons(inputId = "continuous_variable",
+                            label = "Variable",
+                            choices = c("age", "hour_per_week"),
+                            selected = "age")                 
+             )
+      ),
+      column(9, plotOutput("p1"))  
+    ),
+    
+    fluidRow(
+      column(3, 
+             wellPanel(
+               p("Select a categorical variable to view bar chart on the right. Use the check box to view a stacked bar chart to combine the income levels into one graph. "),
+               radioButtons("categorical_variable",
+                            "Variable",
+                            choices = c("Education","Workclass","Sex"),
+                            selected = "Education"),
+               checkboxInput("is_stacked",
+                             label = "Stack bars",
+                             value = FALSE)
+             )
+      ),
+      column(9, plotOutput("p2"))
+    )
+  )
+)
